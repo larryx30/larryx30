@@ -233,7 +233,7 @@ for x in tqdm(SKTCRI):
     KPBUY =[]
     for z in range(len(DDW[str(x)])):
 
-        if DDW[str(x)]["還原收盤價"].iloc[z]  > DDW[str(x)]["MAX52S"].iloc[z] and  DDW[str(x)]["成交金額(千)"].iloc[z] > 50000 and  DDW[str(x)]["資使用率"].iloc[z] < 15         and DDW[str(x)]["成交金額(千)"].shift(1).iloc[z] > 20000  :
+        if DDW[str(x)]["還原收盤價"].iloc[z]  > DDW[str(x)]["MAX52S"].iloc[z] and  DDW[str(x)]["成交金額(千)"].iloc[z] > 50000 and  DDW[str(x)]["資使用率"].iloc[z] < 15         and DDW[str(x)]["成交金額(千)"].shift(1).iloc[z] > 20000 and DDW[str(x)]["還原收盤價"].iloc[z] < 200  :
         
             KPBS = 1
 
@@ -1350,29 +1350,76 @@ import datetime
 
 
 # In[ ]:
+from collections import defaultdict
+
+def zero():
+    return 0
+
+dictb = defaultdict(zero)
+
+if len(關鍵點買進) !=0:
+    for i in 關鍵點買進.index:
+        dictb[i] += 關鍵點買進.loc[i]*0.5
+if len(M夏普買進) !=0:
+    for i in M夏普買進.index:
+        dictb[i] += M夏普買進.loc[i]
+if len(低接買進) !=0:
+    for i in 低接買進.index:
+        dictb[i] += 低接買進.loc[i]
+if len(MM買進) !=0:
+    for i in MM買進.index:
+        dictb[i] += MM買進.loc[i]*2
+
+
+# In[ ]:
+權重買進部位表 = pd.DataFrame.from_dict(dictb,orient='index').sort_index().rename(columns = {0:'買進部位'})
+權重買進部位表 = 權重買進部位表.sort_values(by = ['買進部位'])
+權重買進部位表.to_excel(r'C:\Users\larryx30\larryx30\每週買賣報表\權重買進\權重買進部位表'+datetime.datetime.today().strftime('%Y-%m-%d')+'.xlsx')
+print(權重買進部位表)
+print(權重買進部位表['買進部位'].sum()*1000000)
+
+
+
+
+# In[ ]:
+from collections import defaultdict
+
+def zero():
+    return 0
+
+dicts = defaultdict(zero)
+
+if len(關鍵點賣出) !=0:
+    for i in 關鍵點賣出.index:
+        dicts[i] += 關鍵點賣出.loc[i]-0.5
+if len(M夏普賣出) !=0:
+    for i in M夏普賣出.index:
+        dicts[i] += M夏普賣出.loc[i]-1
+if len(低接賣出) !=0:
+    for i in 低接賣出.index:
+        dicts[i] += 低接賣出.loc[i]-1
+if len(MM賣出) !=0:
+    for i in MM賣出.index:
+        dicts[i] += MM賣出.loc[i]-2
+
 
 
 
 # In[ ]:
 
+權重賣出部位表 = pd.DataFrame.from_dict(dicts,orient='index').sort_index().rename(columns = {0:'賣出部位'})
+權重賣出部位表 = 權重賣出部位表.sort_values(by = ['賣出部位'],ascending=False)
+權重賣出部位表.to_excel(r'C:\Users\larryx30\larryx30\每週買賣報表\權重賣出\權重賣出部位表'+datetime.datetime.today().strftime('%Y-%m-%d')+'.xlsx')
+print(權重賣出部位表)
+print("賣出總金額",權重賣出部位表['賣出部位'].sum()*1000000)
 
 
 
 
 # In[ ]:
 
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
+每日買賣總表 = pd.concat([權重買進部位表.reset_index(drop = False).rename(columns = {'index':'買進部位'}),權重賣出部位表.reset_index(drop = False).rename(columns = {'index':'買進部位'})],axis =1)
+每日買賣總表
+每日買賣總表.to_excel(r'C:\Users\larryx30\larryx30\每週買賣報表\每日買賣總表\每日買賣總表'+datetime.datetime.today().strftime('%Y-%m-%d')+'.xlsx')
 
 
