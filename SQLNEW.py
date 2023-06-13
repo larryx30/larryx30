@@ -1890,39 +1890,39 @@ plt.ylabel("報酬")
 
 # # 所有策略部位變化與配置
 
-# In[91]:
+# In[187]:
 
 
 (pz4*0).plot(figsize=(20, 10),grid = True)#關鍵點
-pzs4.plot()#放空
-(夏普部位*4).plot()#強勢夏普
-(pvz4*0.5).plot()#量能
-KD部位.plot()#低接
-(MM部位*2).plot()#融資
-(外資4*1).plot()#外資
-(MMstop部位*2).plot()#X策略
+pzs4.plot(figsize=(20, 10),grid = True)#放空
+(夏普部位*4).plot(figsize=(20, 10),grid = True)#強勢夏普
+(pvz4*0.5).plot(figsize=(20, 10),grid = True)#量能
+KD部位.plot(figsize=(20, 10),grid = True)#低接
+(MM部位*2).plot(figsize=(20, 10),grid = True)#融資
+(外資4*1).plot(figsize=(20, 10),grid = True)#外資
+(MMstop部位*2).plot(figsize=(20, 10),grid = True)#X策略
 #(spz4).plot(figsize=(20, 10),grid = True)#短勢短出關鍵點
 #plt.savefig('所有策略檔數')
 
 
-# In[92]:
+# In[186]:
 
 
 (trr.sort_index().sum(axis = 1).cumsum()*0).plot(figsize=(20, 10),grid = True)
-trrs.sort_index().sum(axis = 1).cumsum().plot()
+trrs.sort_index().sum(axis = 1).cumsum().plot(figsize=(20, 10),grid = True)
 #(trr2330*20).sort_index().cumsum().plot()
-(trrmsharpe.sort_index().sum(axis = 1).cumsum()*4).plot()
-(trrv*0.5).sort_index().sum(axis =1).cumsum().plot()
-trrkd.sort_index().sum(axis = 1).cumsum().plot()
-(trrmm.sort_index().sum(axis = 1).cumsum()*2).plot()
-(trrtest*1).sort_index().sum(axis = 1).cumsum().plot()
-(trrmmstop.sort_index().sum(axis = 1).cumsum()*2).plot()
+(trrmsharpe.sort_index().sum(axis = 1).cumsum()*4).plot(figsize=(20, 10),grid = True)
+(trrv*0.5).sort_index().sum(axis =1).cumsum().plot(figsize=(20, 10),grid = True)
+trrkd.sort_index().sum(axis = 1).cumsum().plot(figsize=(20, 10),grid = True)
+(trrmm.sort_index().sum(axis = 1).cumsum()*2).plot(figsize=(20, 10),grid = True)
+(trrtest*1).sort_index().sum(axis = 1).cumsum().plot(figsize=(20, 10),grid = True)
+(trrmmstop.sort_index().sum(axis = 1).cumsum()*2).plot(figsize=(20, 10),grid = True)
 #(strr.sort_index().sum(axis = 1).cumsum()*0.5).plot(figsize=(20, 10),grid = True)
 
 
 # # 淨部位變化
 
-# In[93]:
+# In[173]:
 
 
 總部位變化 =  pz4*0 + (夏普部位*4)   +MM部位*2+ KD部位 + MMstop部位*2 + pvz4*0.5   +外資4*1
@@ -1939,7 +1939,7 @@ plt.ylabel("檔數")
 
 
 
-# In[94]:
+# In[179]:
 
 
 總部位變化.tail(10)
@@ -1953,7 +1953,7 @@ plt.ylabel("檔數")
 
 # # 混合策略損益
 
-# In[96]:
+# In[185]:
 
 
 #所有策略加總 =  trrsp  + (trr.sort_index().sum(axis = 1).cumsum()) + (trrkd.sort_index().sum(axis = 1).cumsum()) \
@@ -1964,15 +1964,15 @@ plt.ylabel("檔數")
 # +(trrmm.sort_index().sum(axis = 1).cumsum())*1.5+tqt1*6+(trrmmstop.sort_index().sum(axis = 1).cumsum())*3
 #修正後所有策略加總.plot(figsize=(20, 10),grid = True)
 修正後ETF所有策略加總 =  (trrspETF*1)  + (trr.sort_index().sum(axis = 1).cumsum())*0 + (trrkd.sort_index().sum(axis = 1).cumsum()) +(trrtest.sort_index().sum(axis = 1).cumsum())*1 +(trrmm.sort_index().sum(axis = 1).cumsum())*2+tqt1*4+(trrmmstop.sort_index().sum(axis = 1).cumsum())*2 +(trrv.sort_index().sum(axis = 1).cumsum())*0.5
-修正後ETF所有策略加總.plot(figsize=(20, 10),grid = True)
+修正後ETF所有策略加總.plot(figsize=(10, 5),grid = True)
 
 
 # # 歷年損益
 
-# In[97]:
+# In[180]:
 
 
-分年加總 = (trr.sort_index().sum(axis = 1))*0 +(strr.sort_index().sum(axis = 1)) + ((trrsETF*1).sort_index().sum(axis = 1)) + (trrmsharpe.sort_index().sum(axis = 1))*4+ (trrkd.sort_index().sum(axis = 1)) + (trrmm.sort_index().sum(axis = 1))*2 +(trrtest.sort_index().sum(axis = 1))*1 +(trrmmstop.sort_index().sum(axis = 1))*2 +(trrv.sort_index().sum(axis = 1))*0.5
+分年加總 = (trr.sort_index().sum(axis = 1))*0 +(strr.sort_index().sum(axis = 1))*0 + ((trrsETF*1).sort_index().sum(axis = 1)) + (trrmsharpe.sort_index().sum(axis = 1))*4+ (trrkd.sort_index().sum(axis = 1)) + (trrmm.sort_index().sum(axis = 1))*2 +(trrtest.sort_index().sum(axis = 1))*1 +(trrmmstop.sort_index().sum(axis = 1))*2 +(trrv.sort_index().sum(axis = 1))*0.5
 (分年加總['2003']*1).cumsum().plot(figsize=(20, 10),grid = True)
 (分年加總['2004']*1).cumsum().plot(figsize=(20, 10),grid = True)
 (分年加總['2005']*1).cumsum().plot(figsize=(20, 10),grid = True)
@@ -1987,13 +1987,13 @@ plt.ylabel("檔數")
 (分年加總['2014']*1).cumsum().plot(figsize=(20, 10),grid = True)
 (分年加總['2015']*1).cumsum().plot(figsize=(20, 10),grid = True)
 (分年加總['2016']*1).cumsum().plot(figsize=(20, 10),grid = True)
-(分年加總['2017']*1).cumsum().plot()
-(分年加總['2018']*1).cumsum().plot()
-(分年加總['2019']*1).cumsum().plot()
-(分年加總['2020']*1).cumsum().plot()
-(分年加總['2021']*1).cumsum().plot()
-(分年加總['2022']*1).cumsum().plot()
-(分年加總['2023']*1).cumsum().plot()
+(分年加總['2017']*1).cumsum().plot(figsize=(20, 10),grid = True)
+(分年加總['2018']*1).cumsum().plot(figsize=(20, 10),grid = True)
+(分年加總['2019']*1).cumsum().plot(figsize=(20, 10),grid = True)
+(分年加總['2020']*1).cumsum().plot(figsize=(20, 10),grid = True)
+(分年加總['2021']*1).cumsum().plot(figsize=(20, 10),grid = True)
+(分年加總['2022']*1).cumsum().plot(figsize=(20, 10),grid = True)
+(分年加總['2023']*1).cumsum().plot(figsize=(20, 10),grid = True)
 
 
 
@@ -2002,16 +2002,16 @@ plt.ylabel("檔數")
 
 # # 當年損益(數字)
 
-# In[98]:
+# In[188]:
 
 
 分年加總['2023':].cumsum()
 
 
-# In[99]:
+# In[189]:
 
 
-分年加總['2022':].cumsum().plot()
+分年加總['2022':].cumsum().plot(figsize=(10, 5),grid = True)
 
 
 # In[ ]:
@@ -2022,22 +2022,22 @@ plt.ylabel("檔數")
 
 # # 前後比較
 
-# In[100]:
+# In[190]:
 
 
-(分年加總['2022':]).cumsum().plot()
-(trr['2022':].sort_index().sum(axis = 1).cumsum()).plot()
+(分年加總['2022':]).cumsum().plot(figsize=(10, 5),grid = True)
+(trr['2022':].sort_index().sum(axis = 1).cumsum()).plot(figsize=(10, 5),grid = True)
 #plt.savefig(r'C:\Users\larryx30\larryx30\每週買賣報表\前後比較.png')
 
 
-# In[101]:
+# In[184]:
 
 
-pz4.plot()#關鍵點
+pz4.plot(figsize=(10, 5),grid = True)#關鍵點
 #pzs4.plot()
 #(夏普部位*6).plot()
 #pvz4.plot()
-KD部位.plot()
+KD部位.plot(figsize=(10, 5),grid = True)
 #(MM部位*2).plot()
 #plt.savefig(r'C:\Users\larryx30\larryx30\每週買賣報表\檔數交會.png')
 
@@ -2207,7 +2207,7 @@ except:
 
 # # 每週買賣總表
 
-# In[106]:
+# In[194]:
 
 
 每週買DF = pd.DataFrame()
@@ -2224,7 +2224,7 @@ except:
 每週買DF = pd.concat([每週買DF,pd.DataFrame(MMstop買進.index,columns = ['X買進'])],axis=1)
 每週買DF = pd.concat([每週買DF,pd.DataFrame(外資買進.index,columns = ['外資買進'])],axis=1)
 #每週買DF = pd.concat([每週買DF,pd.DataFrame(外資賣出.index,columns = ['外資賣出'])],axis=1)
-每週買DF = pd.concat([每週買DF,pd.DataFrame(空單回補.index,columns = ['空單回補'])],axis=1)
+#每週買DF = pd.concat([每週買DF,pd.DataFrame(空單回補.index,columns = ['空單回補'])],axis=1)
 #每週買DF = pd.concat([每週買DF,pd.DataFrame(空單回補.index,columns = ['空單回補'])],axis=1)
 每週買DF = pd.concat([每週買DF,pd.DataFrame(ETF空單回補.index,columns = ['ETF空單回補'])],axis=1)
 #每週買DF = pd.concat([每週買DF,pd.DataFrame(強勢短出關鍵點買進.index,columns = ['強勢短出關鍵點買進'])],axis=1)
@@ -2245,7 +2245,7 @@ import datetime
 每週買DF.to_excel(r'C:\Users\larryx30\larryx30\每週買賣報表\買進\每週買進總表'+datetime.datetime.today().strftime('%Y-%m-%d')+'.xlsx')
 
 
-# In[108]:
+# In[193]:
 
 
 每週賣DF = pd.DataFrame()
@@ -2263,7 +2263,7 @@ import datetime
 每週賣DF = pd.concat([每週賣DF,pd.DataFrame(MMstop賣出.index,columns = ['X賣出'])],axis=1)
 每週賣DF = pd.concat([每週賣DF,pd.DataFrame(外資賣出.index,columns = ['外資賣出'])],axis=1)
 #每週賣DF = pd.concat([每週賣DF,pd.DataFrame(空單放空.index,columns = ['空單放空'])],axis=1)
-每週賣DF = pd.concat([每週賣DF,pd.DataFrame(空單放空.index,columns = ['空單放空'])],axis=1)
+#每週賣DF = pd.concat([每週賣DF,pd.DataFrame(空單放空.index,columns = ['空單放空'])],axis=1)
 每週賣DF = pd.concat([每週賣DF,pd.DataFrame(ETF空單放空.index,columns = ['ETF空單放空'])],axis=1)
 #每週賣DF = pd.concat([每週賣DF,pd.DataFrame(強勢短出關鍵點賣出.index,columns = ['強勢短出關鍵點賣出'])],axis=1)
 每週賣DF
@@ -2306,7 +2306,7 @@ import datetime
 部位.tail(10)
 
 
-# In[114]:
+# In[192]:
 
 
 權重關鍵 = trr.sort_index().sum(axis = 1)*0*部位['權重']
@@ -2327,16 +2327,16 @@ import datetime
 #所有策略加總.plot()
 
 
-# In[115]:
+# In[191]:
 
 
-權重加總['2017'].cumsum().plot()
-權重加總['2018'].cumsum().plot()
-權重加總['2019'].cumsum().plot()
-權重加總['2020'].cumsum().plot()
-權重加總['2021'].cumsum().plot()
-權重加總['2022'].cumsum().plot()
-權重加總['2023'].cumsum().plot()
+權重加總['2017'].cumsum().plot(figsize=(20, 10),grid = True)
+權重加總['2018'].cumsum().plot(figsize=(20, 10),grid = True)
+權重加總['2019'].cumsum().plot(figsize=(20, 10),grid = True)
+權重加總['2020'].cumsum().plot(figsize=(20, 10),grid = True)
+權重加總['2021'].cumsum().plot(figsize=(20, 10),grid = True)
+權重加總['2022'].cumsum().plot(figsize=(20, 10),grid = True)
+權重加總['2023'].cumsum().plot(figsize=(20, 10),grid = True)
 
 
 # # 個股權重檢查表
@@ -2377,6 +2377,8 @@ if len(外資持有部位) !=0:
         dict[i] += 外資持有部位.loc[i]*1
 
 
+# # 星期一權重表匯出
+
 # In[117]:
 
 
@@ -2384,7 +2386,7 @@ if len(外資持有部位) !=0:
 權重部位比對表.to_excel(r'C:\Users\larryx30\larryx30\每週買賣報表\權重部位比對表\權重部位比對表'+datetime.datetime.today().strftime('%Y-%m-%d')+'.xlsx')
 if datetime.datetime.now().weekday() == 0:
     權重部位比對表.to_excel(r'\\192.168.1.230\新金部\02策略\理論權重\權重部位比對表.xlsx')
-權重部位比對表
+#權重部位比對表
 
 
 # In[118]:
@@ -2410,13 +2412,13 @@ dictb = defaultdict(zero)
         #dictb[i] += 關鍵點買進.loc[i]*0
 if len(外資買進) !=0:
     for i in 外資買進.index:
-        dictb[i] +=外資買進.loc[i]*1.5
+        dictb[i] +=外資買進.loc[i]*1
 if len(M夏普買進) !=0:
     for i in M夏普買進.index:
         dictb[i] += M夏普買進.loc[i]*4
 if len(低接買進) !=0:
     for i in 低接買進.index:
-        dictb[i] += 低接買進.loc[i]
+        dictb[i] += 低接買進.loc[i]*1
 if len(MM買進) !=0:
     for i in MM買進.index:
         dictb[i] += MM買進.loc[i]*2
@@ -2606,4 +2608,16 @@ df_all
 
 
 dfesg
+
+
+# In[139]:
+
+
+df_all.to_excel(r'C:\Users\larryx30\larryx30\每週買賣報表\ESG部位\ESG部位'+datetime.datetime.today().strftime('%Y-%m-%d')+'.xlsx')
+
+
+# In[ ]:
+
+
+
 
