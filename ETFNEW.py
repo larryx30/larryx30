@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# # 資料定義
+
 # In[1]:
 
 
@@ -79,12 +81,16 @@ class get_df:
         return sql_ETF_DP
 
 
+# # 連結SQL
+
 # In[2]:
 
 
 sql_base = get_df()
 sql_base.db_connect('X01')
 
+
+# # 資料下載與轉換
 
 # In[3]:
 
@@ -120,18 +126,12 @@ ETF行情表 = ETF行情表.set_index('日期')
 # In[6]:
 
 
-ETF行情表
-
-
-# In[7]:
-
-
 ETF1 = pd.Series(ETF行情表['股票代號'])
 ETFlist = ETF1.sort_values().drop_duplicates()
 ETFlist = list(ETFlist)
 
 
-# In[8]:
+# In[7]:
 
 
 from tqdm import tqdm
@@ -141,21 +141,15 @@ ETF_dict = {str(ETFlist[i]):ETF行情表[ETF行情表['股票代號'] == ETFlist
 # In[9]:
 
 
-ETF行情表
-
-
-# In[10]:
-
-
 feature_ls = ETF行情表.columns[2:]
 ETF行情表 = ETF行情表.reset_index(drop = False)
 data_pivots_ls = []
 for feature in tqdm(ETF行情表.columns[2:]):
-    data_pivot = ETF行情表.pivot('日期','股票代號',feature)
+    data_pivot = ETF行情表.pivot(index='日期',columns='股票代號',values=feature)
     data_pivots_ls.append(data_pivot)
 
 
-# In[11]:
+# In[10]:
 
 
 pivot_dict = {str(ETF行情表.columns[2:][i]):data_pivots_ls[i] for i in range(len(ETF行情表.columns[2:]))}
@@ -163,25 +157,7 @@ pivot_dict = {str(ETF行情表.columns[2:][i]):data_pivots_ls[i] for i in range(
 ETF_dict.update(pivot_dict)
 
 
-# In[ ]:
-
-
-
-
-
-# In[12]:
-
-
-ETF_dict['00919'].columns[2:]
-
-
 # In[13]:
-
-
-ETF_dict['00919']
-
-
-# In[14]:
 
 
 responseETF = pd.read_excel(r'C:\Users\larryx30\Desktop\\股票型ETF代碼.xlsx')
@@ -190,63 +166,30 @@ responseETF.index = responseETF.index+1
 SETF = responseETF['股票代號']
 
 
-# In[15]:
+# In[14]:
 
 
 ETFDDW = {}
 for j in tqdm(ETFlist):
-    ETFDDW[str(j)] = ETF_dict[str(j)].resample('W-FRI').agg({'開盤價':'first', '最高價':'max', '最低價':'min', '收盤價':'last', '成交金額(千)':'sum','折溢價(%)':'mean'                                                           }).fillna(method = 'pad' ,axis = 0)
+    ETFDDW[str(j)] = ETF_dict[str(j)].resample('W-FRI').agg({'開盤價':'first', '最高價':'max', '最低價':'min', '收盤價':'last', '成交金額(千)':'sum','折溢價(%)':'mean'\
+                                                           }).fillna(method = 'pad' ,axis = 0)
 
 
-# In[16]:
+# In[15]:
 
 
 大盤夏普值 = pd.read_excel(r'\Users\larryx30\larryx30\每週買賣報表\大盤夏普值.xlsx')
 
 
-# In[17]:
+# In[16]:
 
 
 大盤夏普值 = 大盤夏普值.set_index('日期')
 
 
-# In[ ]:
+# # ETF關鍵點策略
 
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[18]:
-
-
-#ETFlist
-
-
-# In[ ]:
-
-
-
-
-
-# In[19]:
+# In[17]:
 
 
 import talib
@@ -270,11 +213,13 @@ for x in tqdm(SETF):
     KPBUY =[]
     for z in range(len(ETFDDW[str(x)])):
 
-        if ETFDDW[str(x)]["收盤價"].iloc[z]  > ETFDDW[str(x)]["MAX52S"].iloc[z] and ETFDDW[str(x)]['成交金額(千)'].iloc[z] > 50000         and ETFDDW[str(x)]["最低價"].iloc[z] > ETFDDW[str(x)]["20MAS"].iloc[z] and ETFDDW[str(x)]['折溢價(%)'].iloc[z] < 1 and ETFDDW[str(x)]['SHARPE'].iloc[z] <1.5 :
+        if ETFDDW[str(x)]["收盤價"].iloc[z]  > ETFDDW[str(x)]["MAX52S"].iloc[z] and ETFDDW[str(x)]['成交金額(千)'].iloc[z] > 50000 \
+        and ETFDDW[str(x)]["最低價"].iloc[z] > ETFDDW[str(x)]["20MAS"].iloc[z] and ETFDDW[str(x)]['折溢價(%)'].iloc[z] < 1 and ETFDDW[str(x)]['SHARPE'].iloc[z] <1.5 :
         
-            KPBS = 10
+            KPBS = 4
 
-        elif (ETFDDW[str(x)]["收盤價"].iloc[z] < ETFDDW[str(x)]["最低價"].rolling(1).min().shift(1).iloc[z]  and          (( ETFDDW[str(x)]['收盤價'].iloc[z] < ETFDDW[str(x)]['收盤價'].rolling(15).min().shift(1).iloc[z]) ) ) :
+        elif (ETFDDW[str(x)]["收盤價"].iloc[z] < ETFDDW[str(x)]["最低價"].rolling(1).min().shift(1).iloc[z]  and \
+         (( ETFDDW[str(x)]['收盤價'].iloc[z] < ETFDDW[str(x)]['收盤價'].rolling(20).min().shift(1).iloc[z]) ) ) :
          
             KPBS = 0
             
@@ -299,10 +244,10 @@ for x in tqdm(SETF):
         pz = pd.merge(pz,pzbs,left_on = pz.index,right_on = pzbs.index,how = 'outer')
         pz.set_index('key_0',inplace = True)
 
-trrb =(trr).replace(np.inf,0).sort_index().sum(axis = 1).cumsum().plot(figsize=(20, 10),grid = True)
+#trrb =(trr).replace(np.inf,0).sort_index().sum(axis = 1).cumsum().plot(figsize=(20, 10),grid = True)
 
 
-# In[20]:
+# In[18]:
 
 
 import matplotlib.pyplot as plt
@@ -313,7 +258,9 @@ plt.ylabel("Profit")
 plt.savefig(r'C:\Users\larryx30\larryx30\每週買賣報表\ETF.png')
 
 
-# In[21]:
+# # 整理ETF多單買賣訊01值
+
+# In[19]:
 
 
 pz1 = pz.sort_index()
@@ -332,19 +279,29 @@ plt.ylabel("檔數")
 plt.savefig(r'C:\Users\larryx30\larryx30\每週買賣報表\ETF部位變化.png')
 
 
-# In[22]:
+# # 日期設定
+
+# In[20]:
 
 
 當週日期 = trr.index[-1]
 前週日期 = trr.index[-2]
 
 
-# In[23]:
+# In[ ]:
 
 
-ETF持有部位 = pz2.loc[當週日期][(pz2.loc[當週日期]==10)]
-ETF買進 = pz2.loc[當週日期][(pz2.loc[當週日期]==10) & (pz2.loc[前週日期]==0)]
-ETF賣出 = pz2.loc[當週日期][(pz2.loc[當週日期]==0) & (pz2.loc[前週日期]==10)]
+
+
+
+# # ETF部位概況整理
+
+# In[21]:
+
+
+ETF持有部位 = pz2.loc[當週日期][(pz2.loc[當週日期]==4)]
+ETF買進 = pz2.loc[當週日期][(pz2.loc[當週日期]==4) & (pz2.loc[前週日期]==0)]
+ETF賣出 = pz2.loc[當週日期][(pz2.loc[當週日期]==0) & (pz2.loc[前週日期]==4)]
 print("ETF買進標的")
 print(ETF買進)
 print("ETF買進檔數" , len(ETF買進))
@@ -354,19 +311,33 @@ print(ETF賣出)
 print("ETF賣出檔數" , len(ETF賣出))
 
 
+# In[22]:
+
+
+pz2
+
+
+# # ETF買賣總表
+
+# In[23]:
+
+
+import datetime
+每週ETF買賣DF = pd.DataFrame()
+
+每週ETF買賣DF = pd.concat([每週ETF買賣DF,pd.DataFrame(ETF買進.index,columns = ['ETF買進'])],axis=1)
+每週ETF買賣DF = pd.concat([每週ETF買賣DF,pd.DataFrame(ETF賣出.index,columns = ['ETF賣出'])],axis=1)
+
+
 # In[24]:
 
 
-ETF持有部位
+每週ETF買賣DF.to_excel(r'C:\Users\larryx30\larryx30\每週買賣報表\每週ETF買賣\ETF買賣總表'+datetime.datetime.today().strftime('%Y-%m-%d')+'.xlsx')
 
+
+# # ETF部位比對表
 
 # In[25]:
-
-
-pz4
-
-
-# In[41]:
 
 
 from collections import defaultdict
@@ -382,20 +353,23 @@ if len(ETF持有部位) !=0:
         dict[i] += ETF持有部位.loc[i]*1
 
 
-# In[47]:
+# In[27]:
 
 
 import datetime
 ETF部位比對表 = pd.DataFrame.from_dict(dict,orient='index').sort_index().rename(columns = {0:'部位'})
 ETF部位比對表.to_excel(r'C:\Users\larryx30\larryx30\每週買賣報表\ETF權重部位比對表\ETF部位比對表'+datetime.datetime.today().strftime('%Y-%m-%d')+'.xlsx')
-if datetime.datetime.now().weekday() == 5:
-    ETF部位比對表.to_excel(r'Z:\期貨自營\理論權重\ETF部位比對表.xlsx')
+if datetime.datetime.now().weekday() == 0:
+    ETF部位比對表.to_excel(r'\\bond\der\期貨自營\理論權重\ETF部位比對表.xlsx')
+ETF部位比對表.to_excel(r'\\bond\der\期貨自營\理論權重\ETF部位比對表.xlsx')
 
 
-# In[26]:
+# # ETF歷年損益
+
+# In[28]:
 
 
-yl = ['2016','2017','2018','2019','2020','2021','2022','2023']
+yl = ['2016','2017','2018','2019','2020','2021','2022','2023','2024']
 for h in yl :
     trrt = (trr).groupby(pd.Grouper(freq='1W')).sum().sum(axis=1)[str(h)].cumsum()
     trrtfig = (trrt).plot(figsize=(20, 10),grid = True)
@@ -406,63 +380,18 @@ plt.ylabel("報酬")
 trrtfig.savefig(r'C:\Users\larryx30\larryx30\每週買賣報表\ETF歷年損益.png')
 
 
-# In[27]:
+# # ETF持有部位
+
+# In[29]:
 
 
 print('ETF持有部位')
 print(list(ETF持有部位.index))
 
 
-# In[ ]:
+# # ETF彙總股票關鍵點模型
 
-
-
-
-
-# In[28]:
-
-
-total = (trr*10).replace(np.inf,0).sort_index().sum(axis = 1)
-position = pz3.groupby(pd.Grouper(freq='1W')).tail(1)
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[29]:
+# In[30]:
 
 
 ETF單週損益 = (trr).replace(np.inf,0).sort_index().sum(axis = 1)
@@ -477,32 +406,22 @@ ETF單週損益 = ETF單週損益.merge(ETF總部位.reset_index().rename(column
 ETF單週損益 = ETF單週損益.merge(ETF放空部位.reset_index().rename(columns = {'key_0':'日期',0:'放空部位'}),on = '日期')
 ETF單週損益 = ETF單週損益.merge(主關鍵點損益.reset_index().rename(columns = {'key_0':'日期',0:'主關鍵點損益'}),on = '日期')
 
-ETF單週損益['ETF_long_short_損益'] = ETF單週損益['long損益'] + ETF單週損益['short損益']*1
-ETF單週損益['淨部位變化'] = ETF單週損益['ETF總部位'] + (ETF單週損益['放空部位']*1500000)
+ETF單週損益['ETF_long_short_損益'] = ETF單週損益['long損益'] + ETF單週損益['short損益']*0.5
+ETF單週損益['淨部位變化'] = ETF單週損益['ETF總部位'] + (ETF單週損益['放空部位']*1300000)
 ETF單週損益['關鍵點+ETF損益'] = ETF單週損益['ETF_long_short_損益'] + ETF單週損益['主關鍵點損益']
 pd.DataFrame(ETF單週損益)
 ETF單週損益 = ETF單週損益.set_index('日期')
 
 
-# In[ ]:
+# # ETF分項損益與部位
 
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[30]:
+# In[31]:
 
 
 ETF單週損益
 
 
-# In[31]:
+# In[32]:
 
 
 ETF單週損益['ETF_long_short_損益'].cumsum().plot(figsize=(20, 10),grid = True)
@@ -512,10 +431,10 @@ plt.ylabel("報酬")
 plt.savefig(r'C:\Users\larryx30\larryx30\每週買賣報表\ETFLS圖.png')
 
 
-# In[32]:
+# In[33]:
 
 
-LS = ['2016','2017','2018','2019','2020','2021','2022','2023']
+LS = ['2016','2017','2018','2019','2020','2021','2022','2023','2024']
 for h in LS :
     trrtLS = (ETF單週損益['ETF_long_short_損益'])[str(h)].cumsum()
     trrtfigLS = (trrtLS).plot(figsize=(20, 10),grid = True)
@@ -526,20 +445,14 @@ plt.ylabel("報酬")
 trrtfig.savefig(r'C:\Users\larryx30\larryx30\每週買賣報表\ETFLS歷年損益.png')
 
 
-# In[33]:
-
-
-ETF單週損益['ETF_long_short_損益'].cumsum().plot(figsize=(20, 10),grid = True)
-
-plt.xlabel("年份")
-plt.ylabel("報酬")
-
+# # ETF加計空單損益變化
 
 # In[34]:
 
 
 ETF單週損益['淨部位變化'].plot(figsize = (20,10),grid = True)
 plt.savefig(r'C:\Users\larryx30\larryx30\每週買賣報表\ETF淨部位變化.png')
+ETF單週損益['淨部位變化'].to_excel(r'C:\Users\larryx30\larryx30\每週買賣報表\總策略淨部位\總淨部位變化'+datetime.datetime.today().strftime('%Y-%m-%d')+'.xlsx')
 
 
 # In[35]:
@@ -562,7 +475,7 @@ plt.savefig(r'C:\Users\larryx30\larryx30\每週買賣報表\關鍵點+ETF圖.png
 # In[37]:
 
 
-LS = ['2014','2015','2016','2017','2018','2019','2020','2021','2022','2023']
+LS = ['2014','2015','2016','2017','2018','2019','2020','2021','2022','2023','2024']
 for h in LS :
     trrtTTS = (ETF單週損益['關鍵點+ETF損益'])[str(h)].cumsum()
     trrtfigTTS = (trrtTTS).plot(figsize=(20, 10),grid = True)
@@ -582,13 +495,13 @@ trrtfigTTS.savefig(r'C:\Users\larryx30\larryx30\每週買賣報表\關鍵點+ETF
 # BETF = responseBETF['股票代號']
 
 
-# In[ ]:
-
-
-
-
-
 # In[39]:
+
+
+ETF單週損益['關鍵點+ETF損益']
+
+
+# In[40]:
 
 
 # import talib
@@ -644,6 +557,12 @@ trrtfigTTS.savefig(r'C:\Users\larryx30\larryx30\每週買賣報表\關鍵點+ETF
 #         Bpz.set_index('key_0',inplace = True)
 
 # Btrrb =(Btrr*10).replace(np.inf,0).sort_index().sum(axis = 1).cumsum().plot(figsize=(20, 10),grid = True)
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:
